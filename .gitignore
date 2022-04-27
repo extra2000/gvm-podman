@@ -1,0 +1,5 @@
+output/*
+docs-openvas-pod.yaml
+
+src/*
+!src/Dockerfile.*

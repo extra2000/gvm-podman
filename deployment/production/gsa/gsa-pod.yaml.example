@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: gsa-pod
+  name: gsa-pod
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
+spec:
+  restartPolicy: OnFailure
+  hostNetwork: true
+  containers:
+  - name: srv01
+    image: localhost/extra2000/greenbone/gsa
+    securityContext:
+      allowPrivilegeEscalation: false
+      privileged: false
+      capabilities:
+        add: []
+        drop:
+        - CAP_MKNOD
+        - CAP_NET_RAW
+        - CAP_AUDIT_WRITE
+      seLinuxOptions:
+        type: gsa_podman.process
+    resources:
+      requests:
+        memory: 1000Mi
+        cpu: 1000m
+      limits:
+        memory: 1000Mi
+        cpu: 1000m
+    env:
+    - name: GSAD_ARGS
+      valueFrom:
+        configMapKeyRef:
+          name: gsa-configmap
+          key: gsad_args
+    volumeMounts:
+    - mountPath: /run/gvmd/
+      name: gvmd-socket-dir
+      readOnly: true
+    - mountPath: /var/log/gvm/
+      name: gsa-logs
+  volumes:
+  - name: gvmd-socket-dir
+    persistentVolumeClaim:
+      claimName: gvmd-socket-dir
+  - name: gsa-logs
+    persistentVolumeClaim:
+      claimName: gsa-logs

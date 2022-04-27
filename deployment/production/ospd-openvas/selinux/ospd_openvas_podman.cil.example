@@ -1,0 +1,5 @@
+(block ospd_openvas_podman
+    (blockinherit container)
+    (allow process proc_t ( file ( ioctl )))
+    (allow process redis_podman.process ( unix_stream_socket ( connectto )))
+)

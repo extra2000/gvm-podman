@@ -1,0 +1,5 @@
+(block gvmd_podman
+    (blockinherit container)
+    (allow process ospd_openvas_podman.process ( unix_stream_socket ( connectto )))
+    (allow process pg_gvm_podman.process ( unix_stream_socket ( connectto )))
+)

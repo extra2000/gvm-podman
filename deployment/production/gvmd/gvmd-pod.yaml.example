@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: gvmd-pod
+  name: gvmd-pod
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
+spec:
+  restartPolicy: OnFailure
+  hostNetwork: true
+  containers:
+  - name: srv01
+    image: localhost/extra2000/greenbone/gvmd
+    command: ['gvmd', '--foreground', '--unix-socket=/run/gvmd/gvmd.sock', '--osp-vt-update=/run/ospd/ospd-openvas.sock']
+    securityContext:
+      allowPrivilegeEscalation: false
+      privileged: false
+      runAsUser: 1001
+      capabilities:
+        add: []
+        drop:
+        - CAP_MKNOD
+        - CAP_NET_RAW
+        - CAP_AUDIT_WRITE
+      seLinuxOptions:
+        type: gvmd_podman.process
+    resources:
+      requests:
+        memory: 6000Mi
+        cpu: 1000m
+      limits:
+        memory: 6000Mi
+        cpu: 1000m
+    volumeMounts:
+    - mountPath: /run/gvmd/
+      name: gvmd-socket-dir
+    - mountPath: /run/ospd/
+      name: ospd-socket-dir
+    - mountPath: /var/lib/gvm/CA/servercert.pem
+      name: gvmd-cert-server-pub
+      readOnly: true
+    - mountPath: /var/lib/gvm/private/CA/serverkey.pem
+      name: gvmd-cert-server-key
+      readOnly: true
+    - mountPath: /var/lib/gvm/CA/cacert.pem
+      name: gvmd-cert-ca
+      readOnly: true
+    - mountPath: /var/lib/postgresql
+      name: pg-gvm-postgresql-data
+    - mountPath: /var/run/postgresql
+      name: pg-gvm-postgresql-run
+    - mountPath: /var/lib/gvm/
+      name: gvm-var-lib
+    - mountPath: /var/log/gvm/
+      name: gvmd-logs
+  volumes:
+  - name: gvmd-cert-server-pub
+    hostPath:
+      path: ./secrets/server.crt
+  - name: gvmd-cert-server-key
+    hostPath:
+      path: ./secrets/server.key
+  - name: gvmd-cert-ca
+    hostPath:
+      path: ./secrets/ca.crt
+  - name: gvmd-socket-dir
+    persistentVolumeClaim:
+      claimName: gvmd-socket-dir
+  - name: ospd-socket-dir
+    persistentVolumeClaim:
+      claimName: ospd-socket-dir
+  - name: pg-gvm-postgresql-data
+    persistentVolumeClaim:
+      claimName: pg-gvm-postgresql-data
+  - name: pg-gvm-postgresql-run
+    persistentVolumeClaim:
+      claimName: pg-gvm-postgresql-run
+  - name: gvm-var-lib
+    persistentVolumeClaim:
+      claimName: gvm-var-lib
+  - name: gvmd-logs
+    persistentVolumeClaim:
+      claimName: gvmd-logs

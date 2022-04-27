@@ -1,0 +1,19 @@
+FROM localhost/extra2000/greenbone/gse-base
+
+RUN cp -v /opt/src/pg-gvm/.docker/start-postgresql.sh /usr/local/bin/start-postgresql \
+    && chmod 755 /usr/local/bin/start-postgresql
+
+WORKDIR /home/postgres
+
+RUN usermod -u 104 postgres && groupmod -g 106 postgres
+
+RUN chown -R postgres:postgres /var/lib/postgresql
+RUN chown -R postgres:postgres /var/run/postgresql
+RUN chown -R postgres:postgres /var/log/postgresql
+RUN chown -R postgres:postgres /etc/postgresql
+
+RUN sed -i 's/peer/trust/' /etc/postgresql/13/main/pg_hba.conf
+
+USER postgres
+
+CMD ["/usr/local/bin/start-postgresql"]

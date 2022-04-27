@@ -1,0 +1,94 @@
+FROM docker.io/greenbone/community-feed-vts AS feed
+
+FROM docker.io/debian:stable-slim
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+    build-essential \
+    python3-dev \
+    curl \
+    cmake \
+    pkg-config \
+    gnupg \
+    libglib2.0-dev \
+    libgpgme-dev \
+    libgnutls28-dev \
+    uuid-dev \
+    libssh-gcrypt-dev \
+    libhiredis-dev \
+    libxml2-dev \
+    xml-twig-tools \
+    libpcap-dev \
+    libnet1-dev \
+    libldap2-dev \
+    libradcli-dev \
+    libcgreen1-dev \
+    lcov \
+    rsync \
+    libical-dev \
+    libpq-dev \
+    postgresql-server-dev-all \
+    xsltproc \
+    postgresql-server-dev-13 \
+    libgpgme11 \
+    libical3 \
+    libpq5 \
+    postgresql-13 \
+    postgresql-client-13 \
+    postgresql-client-common \
+    gosu \
+    python3 \
+    python3-pip \
+    libmicrohttpd-dev \
+    libmicrohttpd12 \
+    bison \
+    clang \
+    clang-format \
+    clang-tools \
+    libjson-glib-dev \
+    libksba-dev \
+    libjson-glib-1.0-0 \
+    libksba8 \
+    && rm -rf /var/lib/apt/lists/*
+
+## gvm-libs
+COPY ./gvm-libs /opt/src/gvm-libs
+WORKDIR /opt/src/gvm-libs
+RUN cmake -DCMAKE_BUILD_TYPE=Release -B/opt/src/gvm-libs/build /opt/src/gvm-libs
+RUN cmake --build /opt/src/gvm-libs/build -- install
+RUN ldconfig
+
+## gvmd
+COPY ./gvmd /usr/local/src/gvmd
+WORKDIR /usr/local/src/gvmd
+RUN mkdir build && \
+    cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release .. && \
+    make install
+
+## pg-gvm
+COPY ./pg-gvm /opt/src/pg-gvm
+WORKDIR /opt/src/pg-gvm
+RUN mkdir /opt/src/pg-gvm/build && \
+    cd /opt/src/pg-gvm/build && \
+    cmake -DCMAKE_BUILD_TYPE=Release /opt/src/pg-gvm && \
+    make install
+
+# openvas-scanner
+COPY ./openvas-scanner /opt/src/openvas-scanner
+RUN cmake -DCMAKE_BUILD_TYPE=Release -B/opt/src/openvas-scanner/build /opt/src/openvas-scanner
+RUN cmake --build /opt/src/openvas-scanner/build -- install
+RUN ldconfig
+
+# ospd-openvas
+COPY ./ospd-openvas /opt/src/ospd-openvas
+WORKDIR /opt/src/ospd-openvas
+RUN python3 -m pip install .
+COPY --from=feed /opt/greenbone/feed/plugins /var/lib/openvas/plugins
+
+# gsad
+COPY ./gsad /opt/src/gsad
+WORKDIR /opt/src/gsad
+RUN cmake -DCMAKE_BUILD_TYPE=Release -B/opt/src/gsad/build /opt/src/gsad
+RUN cmake --build /opt/src/gsad/build -- install

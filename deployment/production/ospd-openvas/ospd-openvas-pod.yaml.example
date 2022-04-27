@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: ospd-openvas-pod
+  name: ospd-openvas-pod
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
+spec:
+  restartPolicy: OnFailure
+  hostNetwork: false
+  containers:
+  - name: srv01
+    image: localhost/extra2000/greenbone/ospd-openvas
+    securityContext:
+      allowPrivilegeEscalation: false
+      privileged: false
+      capabilities:
+        add:
+        - CAP_NET_RAW
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+      seLinuxOptions:
+        type: ospd_openvas_podman.process
+    resources:
+      requests:
+        memory: 1000Mi
+        cpu: 1000m
+      limits:
+        memory: 1000Mi
+        cpu: 1000m
+    volumeMounts:
+    - mountPath: /etc/ospd-openvas/ospd-openvas.conf
+      name: ospd-openvas-config
+      readOnly: true
+    - mountPath: /run/ospd/
+      name: ospd-socket-dir
+    - mountPath: /run/redis/
+      name: redis-socket-dir
+      readOnly: true
+    - mountPath: /var/lib/gvm/CA/servercert.pem
+      name: ospd-openvas-cert-server-pub
+      readOnly: true
+    - mountPath: /var/lib/gvm/private/CA/serverkey.pem
+      name: ospd-openvas-cert-server-key
+      readOnly: true
+    - mountPath: /var/lib/gvm/CA/cacert.pem
+      name: ospd-openvas-cert-ca
+      readOnly: true
+    - mountPath: /var/lib/gvm/
+      name: gvm-var-lib
+    - mountPath: /var/lib/openvas
+      name: openvas-var-lib
+    - mountPath: /var/log/gvm/
+      name: ospd-openvas-log
+  volumes:
+  - name: ospd-openvas-config
+    hostPath:
+      path: ./configs/ospd-openvas.conf
+  - name: ospd-openvas-cert-server-pub
+    hostPath:
+      path: ./secrets/server.crt
+  - name: ospd-openvas-cert-server-key
+    hostPath:
+      path: ./secrets/server.key
+  - name: ospd-openvas-cert-ca
+    hostPath:
+      path: ./secrets/ca.crt
+  - name: ospd-socket-dir
+    persistentVolumeClaim:
+      claimName: ospd-socket-dir
+  - name: redis-socket-dir
+    persistentVolumeClaim:
+      claimName: redis-socket-dir
+  - name: gvm-var-lib
+    persistentVolumeClaim:
+      claimName: gvm-var-lib
+  - name: openvas-var-lib
+    persistentVolumeClaim:
+      claimName: openvas-var-lib
+  - name: ospd-openvas-log
+    persistentVolumeClaim:
+      claimName: ospd-openvas-log

@@ -1,0 +1,20 @@
+FROM localhost/extra2000/greenbone/gse-base
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir -pv /etc/gvm/ \
+    && cp -v /opt/src/ospd-openvas/config/ospd-openvas.conf /etc/gvm/ospd-openvas.conf \
+    && cp -v /opt/src/ospd-openvas/.docker/entrypoint.sh /usr/local/bin/entrypoint
+
+RUN addgroup --gid 1001 --system ospd-openvas && \
+    adduser --no-create-home --shell /bin/false --disabled-password \
+    --uid 1001 --system --group ospd-openvas
+
+RUN chgrp -R ospd-openvas /etc/openvas/ && \
+    chown -R ospd-openvas /var/log/gvm /var/lib/openvas/ && \
+    chmod 755 /etc/openvas /var/log/gvm && \
+    chmod 644 /etc/openvas/openvas_log.conf && \
+    chmod 755 /usr/local/bin/entrypoint
+
+CMD ["/usr/local/bin/ospd-openvas", "--foreground", "--config=/etc/ospd-openvas/ospd-openvas.conf", "-m", "666"]

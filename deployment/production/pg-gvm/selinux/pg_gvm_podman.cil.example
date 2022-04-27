@@ -1,0 +1,7 @@
+(block pg_gvm_podman
+    (blockinherit container)
+    (allow process node_t ( tcp_socket ( node_bind )))
+    (allow process node_t ( udp_socket ( node_bind )))
+    (allow process postgresql_port_t ( tcp_socket ( name_bind )))
+    (allow process self ( tcp_socket ( listen )))
+)
