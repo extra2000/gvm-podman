@@ -106,7 +106,7 @@ Create systemd files to run at startup:
 
     mkdir -pv ~/.config/systemd/user
     cd ~/.config/systemd/user
-    podman generate systemd --files --name pg-gvm-pod
+    podman generate systemd --files --name pg-gvm-pod-srv01
     systemctl --user enable container-pg-gvm-pod-srv01.service
 
 Deploy gvmd
@@ -190,7 +190,7 @@ Create systemd files to run at startup:
 
     mkdir -pv ~/.config/systemd/user
     cd ~/.config/systemd/user
-    podman generate systemd --files --name gvmd-pod
+    podman generate systemd --files --name gvmd-pod-srv01
     systemctl --user enable container-gvmd-pod-srv01.service
 
 Deploy ospd-openvas
@@ -304,7 +304,7 @@ Create systemd files to run at startup:
 
     mkdir -pv ~/.config/systemd/user
     cd ~/.config/systemd/user
-    podman generate systemd --files --name gsa-pod
+    podman generate systemd --files --name gsa-pod-srv01
     systemctl --user enable container-gsa-pod-srv01.service
 
 The GSA web page can be accessed via http://127.0.0.1.
