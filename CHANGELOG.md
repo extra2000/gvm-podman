@@ -1,5 +1,18 @@
 # Changelog
 
+### [1.0.1](https://github.com/extra2000/gvm-podman/compare/v1.0.0...v1.0.1) (2022-04-29)
+
+
+### Code Refactoring
+
+* **gvmd-pod:** remove unused SSL certs ([10e5518](https://github.com/extra2000/gvm-podman/commit/10e5518b5b51ab3a90ae500dc79900cbe9819acd))
+* **ospd-openvas-pod:** remove unused SSL certs ([3ff7322](https://github.com/extra2000/gvm-podman/commit/3ff7322cb922f1e5caff1d7727db6293a1192a16))
+
+
+### Documentations
+
+* **deployments:** fix typo for systemd instructions ([7d664cb](https://github.com/extra2000/gvm-podman/commit/7d664cba3ab61062df640891aa3c0ea7ec6efe86))
+
 ## 1.0.0 (2022-04-28)
 
 
