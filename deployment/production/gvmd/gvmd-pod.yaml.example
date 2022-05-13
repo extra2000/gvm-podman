@@ -37,6 +37,15 @@ spec:
       name: gvmd-socket-dir
     - mountPath: /run/ospd/
       name: ospd-socket-dir
+    - mountPath: /var/lib/gvm/CA/servercert.pem
+      name: gvmd-cert-server-pub
+      readOnly: true
+    - mountPath: /var/lib/gvm/private/CA/serverkey.pem
+      name: gvmd-cert-server-key
+      readOnly: true
+    - mountPath: /var/lib/gvm/CA/cacert.pem
+      name: gvmd-cert-ca
+      readOnly: true
     - mountPath: /var/lib/postgresql
       name: pg-gvm-postgresql-data
     - mountPath: /var/run/postgresql
@@ -46,6 +55,15 @@ spec:
     - mountPath: /var/log/gvm/
       name: gvmd-logs
   volumes:
+  - name: gvmd-cert-server-pub
+    hostPath:
+      path: ./secrets/server.crt
+  - name: gvmd-cert-server-key
+    hostPath:
+      path: ./secrets/server.key
+  - name: gvmd-cert-ca
+    hostPath:
+      path: ./secrets/ca.crt
   - name: gvmd-socket-dir
     persistentVolumeClaim:
       claimName: gvmd-socket-dir
