@@ -12,7 +12,7 @@ spec:
   containers:
   - name: srv01
     image: localhost/extra2000/greenbone/gvmd
-    command: ['gvmd', '--foreground', '--unix-socket=/run/gvmd/gvmd.sock', '--osp-vt-update=/run/ospd/ospd-openvas.sock']
+    command: ['gvmd', '--foreground', '--listen=127.0.0.1', '--port=4000', '--osp-vt-update=/run/ospd/ospd-openvas.sock']
     securityContext:
       allowPrivilegeEscalation: false
       privileged: false
