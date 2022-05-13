@@ -1,0 +1,12 @@
+FROM docker.io/python:3.10-bullseye
+
+COPY ./gvm-tools /opt/gvm-tools
+WORKDIR /opt/gvm-tools
+
+RUN python3 -m pip install .
+
+RUN addgroup --gid 1001 --system gvmuser && \
+    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group gvmuser
+
+RUN chown -R gvmuser:gvmuser /opt/gvm-tools
+USER gvmuser

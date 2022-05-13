@@ -23,6 +23,11 @@ Clone repositories
     git clone https://github.com/extra2000/greenbone-ospd-openvas.git -b v21.4.4 gvm-podman/src/ospd-openvas
     git clone https://github.com/extra2000/greenbone-gsad.git -b v21.4.4 gvm-podman/src/gsad
     git clone https://github.com/extra2000/greenbone-gsa.git -b v21.4.4 gvm-podman/src/gsa
+    git clone https://github.com/extra2000/greenbone-gvm-tools.git -b v21.10.0 gvm-podman/src/gvm-tools
+
+.. note::
+
+    The ``gvm-tools`` repository is optional, only used for remote access or through command-line.
 
 Then, ``cd`` into project root directory:
 
@@ -50,6 +55,7 @@ Build images:
     podman build -t extra2000/greenbone/ospd-openvas -f Dockerfile.ospd-openvas .
     podman build -t extra2000/greenbone/gsad -f Dockerfile.gsad .
     podman build -t extra2000/greenbone/gsa -f Dockerfile.gsa .
+    podman build -t extra2000/greenbone/gvm-tools -f Dockerfile.gvm-tools .
 
 Deploy pg-gvm
 -------------
@@ -308,3 +314,10 @@ Create systemd files to run at startup:
     systemctl --user enable container-gsa-pod-srv01.service
 
 The GSA web page can be accessed via http://127.0.0.1.
+
+Testing with gvm-tools
+----------------------
+
+.. code-block:: bash
+
+    podman run -it --rm extra2000/greenbone/gvm-tools gvm-cli --log debug --gmp-username admin --gmp-password admin --protocol GMP tls --hostname [GVMD_SERVER_IP] --port 4000 --xml "<get_version/>"
