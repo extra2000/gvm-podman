@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: gsa-configmap
 data:
-  gsad_args: "--foreground --http-only --listen=127.0.0.1 --mlisten=127.0.0.1 --port=80 --mport=4000"
+  gsad_args: "--foreground --http-only --listen=127.0.0.1 --mlisten=127.0.0.1 --port=8080 --mport=4000"

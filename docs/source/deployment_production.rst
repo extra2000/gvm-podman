@@ -313,7 +313,7 @@ Create systemd files to run at startup:
     podman generate systemd --files --name gsa-pod-srv01
     systemctl --user enable container-gsa-pod-srv01.service
 
-The GSA web page can be accessed via http://127.0.0.1.
+The GSA web page can be accessed via http://127.0.0.1:8080.
 
 Testing with gvm-tools
 ----------------------
