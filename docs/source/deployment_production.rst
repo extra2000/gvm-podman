@@ -256,8 +256,8 @@ Create systemd files to run at startup:
 
     mkdir -pv ~/.config/systemd/user
     cd ~/.config/systemd/user
-    podman generate systemd --files --name openvas-pod
-    systemctl --user enable pod-openvas-pod.service container-openvas-pod-srv01.service
+    podman generate systemd --files --name ospd-openvas-pod-srv01
+    systemctl --user enable container-ospd-openvas-pod-srv01.service
 
 Deploy gsa
 ----------
