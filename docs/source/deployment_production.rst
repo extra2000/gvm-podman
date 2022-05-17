@@ -321,3 +321,13 @@ Testing with gvm-tools
 .. code-block:: bash
 
     podman run -it --rm extra2000/greenbone/gvm-tools gvm-cli --log debug --gmp-username admin --gmp-password admin --protocol GMP tls --hostname [GVMD_SERVER_IP] --port 4000 --xml "<get_version/>"
+
+
+Change user password
+--------------------
+
+For example, to change password for ``admin`` user:
+
+.. code-block:: bash
+
+    podman exec -it gvmd-pod-srv01 gvmd --user=admin --new-password="NEW_PASSWORD"
