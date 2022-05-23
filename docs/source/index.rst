@@ -11,3 +11,4 @@ Welcome to GVM Podman's documentation!
   introduction
   host_preparations
   deployment_production
+  gvm_cli
