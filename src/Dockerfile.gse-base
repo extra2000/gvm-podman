@@ -1,5 +1,3 @@
-FROM docker.io/greenbone/community-feed-vts AS feed
-
 FROM docker.io/debian:stable-slim
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -85,7 +83,6 @@ RUN ldconfig
 COPY ./ospd-openvas /opt/src/ospd-openvas
 WORKDIR /opt/src/ospd-openvas
 RUN python3 -m pip install .
-COPY --from=feed /opt/greenbone/feed/plugins /var/lib/openvas/plugins
 
 # gsad
 COPY ./gsad /opt/src/gsad
