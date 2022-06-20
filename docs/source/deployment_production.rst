@@ -331,3 +331,16 @@ For example, to change password for ``admin`` user:
 .. code-block:: bash
 
     podman exec -it gvmd-pod-srv01 gvmd --user=admin --new-password="NEW_PASSWORD"
+
+Updating feeds
+--------------
+
+Execute the following commands:
+
+.. code-block:: bash
+
+    podman exec -it --user ospd-openvas ospd-openvas-pod-srv01 greenbone-nvt-sync
+    podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type SCAP
+    podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type CERT
+    podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type GVMD_DATA
+
