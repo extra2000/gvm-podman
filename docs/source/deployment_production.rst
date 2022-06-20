@@ -344,3 +344,98 @@ Execute the following commands:
     podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type CERT
     podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type GVMD_DATA
 
+Creating systemd schedule for auto-update feeds
+-----------------------------------------------
+
+Create directory ``~/.config/systemd/user``:
+
+.. code-block:: bash
+
+    mkdir -pv ~/.config/systemd/user
+
+Create ``~/.config/systemd/user/gvm-sync-nvt.service`` file with the following content:
+
+.. code-block:: text
+
+    [Unit]
+    Description=Updates greenbone-nvt-sync
+
+    [Service]
+    Type=simple
+    ExecStart=/usr/bin/podman exec -it --user ospd-openvas ospd-openvas-pod-srv01 greenbone-nvt-sync
+    Type=oneshot
+
+Create ``~/.config/systemd/user/gvm-sync-scap.service`` file with the following content:
+
+.. code-block:: text
+
+    [Unit]
+    Description=Updates greenbone-feed-sync --type SCAP
+    Requires=gvm-sync-nvt.service
+    After=gvm-sync-nvt.service
+
+    [Service]
+    Type=simple
+    ExecStart=/usr/bin/podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type SCAP
+    Type=oneshot
+
+Create ``~/.config/systemd/user/gvm-sync-cert.service`` file with the following content:
+
+.. code-block:: text
+
+    [Unit]
+    Description=Updates greenbone-feed-sync --type CERT
+    Requires=gvm-sync-scap.service
+    After=gvm-sync-scap.service
+
+    [Service]
+    Type=simple
+    ExecStart=/usr/bin/podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type CERT
+    Type=oneshot
+
+Create ``~/.config/systemd/user/gvm-sync-gvmd-data.service`` file with the following content:
+
+.. code-block:: text
+
+    [Unit]
+    Description=Updates greenbone-feed-sync --type GVMD_DATA
+    Requires=gvm-sync-cert.service
+    After=gvm-sync-cert.service
+
+    [Service]
+    Type=simple
+    ExecStart=/usr/bin/podman exec -it gvmd-pod-srv01 greenbone-feed-sync --type GVMD_DATA
+    Type=oneshot
+
+Create ``~/.config/systemd/user/gvm-update.timer`` file with the following content:
+
+.. code-block:: text
+
+    [Unit]
+    Description=Schedule GVM feed update
+
+    [Timer]
+    Persistent=true
+    OnBootSec=900
+    OnCalendar=*-*-* 00:00:00 UTC
+    Unit=gvm-sync-gvmd-data.service
+
+    [Install]
+    WantedBy=timers.target
+
+.. note::
+
+    Change ``OnCalendar=*-*-* 00:00:00 UTC`` according to your requirement.
+
+Reload user's `systemd`. Then, start and enable the GVM update schedule:
+
+.. code-block:: bash
+
+    systemctl --user daemon-reload
+    systemctl --user --now enable gvm-update.timer
+
+To check when is the next update will be triggered:
+
+.. code-block:: bash
+
+    systemctl --user list-timers --all
