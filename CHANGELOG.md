@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.0.1](https://github.com/extra2000/gvm-podman/compare/v2.0.0...v2.0.1) (2022-06-20)
+
+
+### Continuous Integrations
+
+* **AppVeyor:** revert "ci: disable test due to broken Kubic mirror" ([0266938](https://github.com/extra2000/gvm-podman/commit/026693865c7bb1c4194527a4f2af72107b3214c1))
+
+
+### Fixes
+
+* **Dockerfile.gse-base:** remove `community-feed-vts` image ([ce70b36](https://github.com/extra2000/gvm-podman/commit/ce70b36dda1c107759fb9b02cb7c4cd1bfcfaa50))
+
+
+### Documentations
+
+* add `gvm-cli` instructions ([43c077e](https://github.com/extra2000/gvm-podman/commit/43c077e3644b41cfe783be77cd3d29cb2449859a))
+* **deployment:** add instruction for updating feeds ([67a2a7f](https://github.com/extra2000/gvm-podman/commit/67a2a7f0b2d2ceb98b8dc906dc27335759ab3f1d))
+* **deployment:** add systemd instructions for auto-update ([be5a2da](https://github.com/extra2000/gvm-podman/commit/be5a2daf6028a0569f620d5c321e09a076bc3b3d))
+
 ## [2.0.0](https://github.com/extra2000/gvm-podman/compare/v1.0.1...v2.0.0) (2022-05-17)
 
 
